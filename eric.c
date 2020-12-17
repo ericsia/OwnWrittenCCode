@@ -21,21 +21,25 @@ char* getText(char* msg)
 {
 	/*According the ISO IEC 7813 the cardholder name length must be 2 to 26 characters 
 	including first name, last name and spaces*/
-	char result[26];
-	int size;
+
+	/*if use char result[26] then it is local to getText(char* msg).
+	After returns, that memory is reclaimed and can be used by other code.
+	To fix gibberish you shall not return pointers to local variables,
+	instead need to dynamically allocating a memory for return the result*/
+	char* result = (char*)malloc(26 * sizeof(char));;
+	int len;
 
 	do
 	{
 		printf(msg);
 		fgets(result, 26, stdin);
 		/*fgets() small input last character in the array will be '\n'*/
-		size = strlen(result);
-		result[size - 1] = '\0';
+		len = strlen(result);
+		result[len - 1] = '\0';
+
+	/*need to use result[0] to check if user don't enter anything*/
 	} while (result[0] == ' ' || result[0] == NULL);
 
-	/*The array char result[26] is local to getText(char* msg). 
-	After returns, that memory is reclaimed and can be used by other code.
-	To fix that you shall not return pointers to local variables, 
-	instead use a dynamically allocated copy of the string*/
-	return strdup(result);
+	
+	return result;
 }
